@@ -2,18 +2,48 @@
 
 import * as React from 'react';
 import  { useEffect, useState } from 'react';
-import {  StyleSheet, ActivityIndicator, SectionList, Button, View, Text } from 'react-native';
+import {  StyleSheet, ActivityIndicator, SectionList, Button, View, Text, Image, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 function HomeScreen({ navigation }) {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Home Screen</Text>
-            <Button
-                title="120 tình huống"
-                onPress={() => navigation.navigate('Situations')}
-            />
+        // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        //     <Text>Home Screen</Text>
+        //     <Button
+        //         title="120 tình huống"
+        //         onPress={() => navigation.navigate('Situations')}
+        //     />
+        // </View>
+        <View style={[styles.container, {
+            // Try setting `flexDirection` to `"row"`.
+            flexDirection: "column"
+        }]}>
+            <View style={{ flex: 1, flexDirection: "row" }} >
+                <View style={{ flex: 1,  justifyContent: "center" , margin : 24}} >
+                    <Image source={require('./assets/tick.png')} />
+                    <Text>Đề thi</Text>
+                </View>
+                <View style={{ flex: 1,  justifyContent: "center" , margin : 24}} >
+                    <Image source={require('./assets/edit.png')} />
+                    <Text>Ôn tập theo chương</Text>
+                </View>
+
+            </View>
+            <View style={{ flex: 1, flexDirection: "row" }} >
+                <View style={{ flex: 1,  justifyContent: "center" , margin : 24}} >
+                    <Image source={require('./assets/fog.png')} />
+                    <Text>Luyện tập câu sai</Text>
+                </View>
+                <View style={{ flex: 1,  justifyContent: "center" , margin : 24}} >
+                    <TouchableOpacity style={{backgroundColor: "#E9F2F6", padding: 20}} onPress={() => navigation.navigate('Situations')}>
+                    <Image source={require('./assets/repair.png')} />
+                    <Text>120 tình huống</Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+
         </View>
     );
 }
@@ -86,7 +116,7 @@ function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#eafffe'
+        backgroundColor: '#ffffff'
     },
     taskItem:{
         padding: 10,
