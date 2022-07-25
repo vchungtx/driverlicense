@@ -19,6 +19,9 @@ public class SimQuestion {
     @Column(name = "name", length = 500)
     private String name;
 
+    @Column(name = "detail", length = 4000)
+    private String detail;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chapter_id")
@@ -27,8 +30,8 @@ public class SimQuestion {
     @Column(name = "url", length = 1000)
     private String url;
 
-    @Column(name = "priority")
-    private Integer priority;
+    @Column(name = "number_order")
+    private Integer numberOrder;
 
     @Column(name = "status")
     private Integer status;
@@ -85,12 +88,12 @@ public class SimQuestion {
         this.status = status;
     }
 
-    public Integer getPriority() {
-        return priority;
+    public Integer getNumberOrder() {
+        return numberOrder;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setNumberOrder(Integer numberOrder) {
+        this.numberOrder = numberOrder;
     }
 
     public String getUrl() {
@@ -123,5 +126,13 @@ public class SimQuestion {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 }

@@ -18,8 +18,8 @@ public class SimChapter {
     @Column(name = "name", length = 200)
     private String name;
 
-    @Column(name = "priority")
-    private Integer priority;
+    @Column(name = "number_order")
+    private Integer numberOrder;
 
     @Column(name = "status")
     private Integer status;
@@ -66,12 +66,12 @@ public class SimChapter {
         this.status = status;
     }
 
-    public Integer getPriority() {
-        return priority;
+    public Integer getNumberOrder() {
+        return numberOrder;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setNumberOrder(Integer numberOrder) {
+        this.numberOrder = numberOrder;
     }
 
     public String getName() {
