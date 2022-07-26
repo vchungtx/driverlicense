@@ -16,7 +16,7 @@ export default function VideoPlayer(props) {
     item
   } = props;
 
-  const playbackInstance = useRef(null);
+  // const playbackInstance = useRef(null);
 
   const [playbackInstanceInfo, setPlaybackInstanceInfo] = useState({
     position: 0,
@@ -27,8 +27,8 @@ export default function VideoPlayer(props) {
   useEffect(() => {
 
     return () => {
-      if (playbackInstance.current) {
-        playbackInstance.current.setStatusAsync({
+      if (this.props.playbackInstance.current) {
+        this.props.playbackInstance.current.setStatusAsync({
           shouldPlay: false
         })
       }
@@ -47,8 +47,8 @@ export default function VideoPlayer(props) {
 
     const shouldPlay = playbackInstanceInfo.state !== 'Playing';
 
-    if (playbackInstance.current !== null) {
-      await playbackInstance.current.setStatusAsync({
+    if (this.props.playbackInstance.current !== null) {
+      await this.props.playbackInstance.current.setStatusAsync({
         shouldPlay,
         ...(playbackInstanceInfo.state === 'Ended' && { positionMillis: 0 }),
       })
@@ -65,7 +65,7 @@ export default function VideoPlayer(props) {
 
 
   const updatePlaybackCallback = (status) => {
-    console.log(status, 'status');
+    // console.log(status, 'status');
     if (status.isLoaded) {
       setPlaybackInstanceInfo({
         ...playbackInstanceInfo,
@@ -90,18 +90,19 @@ export default function VideoPlayer(props) {
     <View style={{flex:1, marginBottom:20}}>
        <View style={styles.video(width, height + 20)}>
         <Video
-          ref={playbackInstance}
+          ref={props.playbackInstance}
           style={styles.video(width, height)}
           source={{ uri:videoUri }}
           resizeMode="cover"
           isLooping={false}
           shouldPlay={true}
           onPlaybackStatusUpdate={updatePlaybackCallback}
+          progressUpdateIntervalMillis={200}
         />
       <View style={styles.controlsContainer}>
         <VideoControls
           state={playbackInstanceInfo.state}
-          playbackInstance={playbackInstance.current}
+          playbackInstance={props.playbackInstance.current}
           playbackInstanceInfo={playbackInstanceInfo}
           setPlaybackInstanceInfo={setPlaybackInstanceInfo}
           togglePlay={togglePlay}

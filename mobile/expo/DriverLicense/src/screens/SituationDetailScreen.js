@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
-import {Dimensions, StyleSheet, View, Button, SafeAreaView, Alert, ScrollView, Text, Pressable} from 'react-native';
+import {
+    Dimensions,
+    StyleSheet,
+    View,
+    Button,
+    SafeAreaView,
+    Alert,
+    ScrollView,
+    Text,
+    Pressable,
+    Image
+} from 'react-native';
 import VideoPlayer from '../components/VideoPlayer';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -18,7 +29,7 @@ class SituationDetailScreen extends Component {
             item: props.route.params.data[props.route.params.questionIndex],
 
         };
-
+        this.playbackInstance = React.createRef();
     }
 
     onUpdatePosition(positionMillis) {
@@ -31,6 +42,7 @@ class SituationDetailScreen extends Component {
         if (!this.state.checked) {
             this.setState({checked: true});
             const checkPointPosition = this.state.positionMillis / 1000;
+            console.log('checkPointPosition:' + checkPointPosition);
             const item = this.state.item;
             let startPoint = item.startPoint;
             let endPoint = item.endPoint;
@@ -59,7 +71,13 @@ class SituationDetailScreen extends Component {
                 questionIndex: this.state.questionIndex + 1,
                 item: nextItem
             })
-
+            try {
+                await this.playbackInstance.current.stopAsync();
+                await this.playbackInstance.current.unloadAsync();
+                return await this.play(this.playbackInstance.current, nextItem.url);
+            } catch (error) {
+                console.log('error inside playNext helper method', error.message);
+            }
         }
     }
 
@@ -67,17 +85,37 @@ class SituationDetailScreen extends Component {
         const data = this.props.route.params.data;
 
         console.log('pressPrev:' + this.state.questionIndex);
-        if (this.state.questionIndex >  0) {
+        if (this.state.questionIndex > 0) {
             const prevItem = data[this.state.questionIndex - 1];
             this.props.navigation.setOptions({title: prevItem.name});
             this.setState({
                 checked: false,
-                questionIndex: this.state.questionIndex - 1,
+                questionIndex: (this.state.questionIndex - 1),
                 item: prevItem
             })
-
+            try {
+                await this.playbackInstance.current.stopAsync();
+                await this.playbackInstance.current.unloadAsync();
+                return await this.play(this.playbackInstance.current, prevItem.url);
+            } catch (error) {
+                console.log('error inside playNext helper method', error.message);
+            }
         }
     }
+
+    // play audio
+    play = async (playbackObj, uri) => {
+        try {
+            return await playbackObj.loadAsync(
+                { uri },
+                { shouldPlay: true, progressUpdateIntervalMillis: 200 }
+            );
+
+            return await playbackObj.playFromPositionAsync(0);
+        } catch (error) {
+            console.log('error inside play helper method', error.message);
+        }
+    };
 
     render() {
         const data = this.props.route.params.data;
@@ -86,10 +124,11 @@ class SituationDetailScreen extends Component {
             <SafeAreaView style={styles.container}>
                 <ScrollView style={{flex: 1}}>
                     <VideoPlayer
+                        playbackInstance={this.playbackInstance}
                         height={width * 3 / 4}
                         width={width}
-                        videoUri={this.state.item.url}
-                        item={this.state.item}
+                        videoUri={this.props.route.params.data[this.props.route.params.questionIndex].url}
+                        // item={this.state.item}
                         outOfBoundItems={this.state.outOfBoundItems}
                         onUpdatePosition={this.onUpdatePosition}
                     />
@@ -121,7 +160,16 @@ class SituationDetailScreen extends Component {
                         </Pressable>
 
                     </View>
-                    <Text>{this.state.checked ? this.state.point + "/5" : ""}</Text>
+                    {this.state.checked ?
+                        <View style={styles.answerView}>
+                            <Text>Điểm:{this.state.point + "/5"}</Text>
+                            <Text>{this.state.item.answer}</Text>
+                            <Image source={{uri: this.state.item.answerImg}} style={styles.answerImg}/>
+                        </View>
+                        : <View/>
+
+                    }
+
                 </ScrollView>
             </SafeAreaView>
 
@@ -138,6 +186,15 @@ const styles = StyleSheet.create({
     buttonSpace: {
         margin: 500,
     },
+    answerView : {
+        margin: 20
+    },
+    answerImg : {
+        width : "100%",
+        aspectRatio : 4/3,
+        resizeMode : "contain"
+
+    }
 
 });
 
