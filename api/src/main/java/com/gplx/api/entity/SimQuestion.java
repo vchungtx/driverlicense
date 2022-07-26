@@ -48,6 +48,12 @@ public class SimQuestion {
     @Column(name = "end_point")
     private Double endPoint;
 
+    @Column(name = "answer", length = 4000)
+    private String answer;
+
+    @Column(name = "answer_img", length = 500)
+    private String answerImg;
+
     public Double getEndPoint() {
         return endPoint;
     }
@@ -134,5 +140,21 @@ public class SimQuestion {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getAnswerImg() {
+        return answerImg;
+    }
+
+    public void setAnswerImg(String answerImg) {
+        this.answerImg = answerImg;
     }
 }
