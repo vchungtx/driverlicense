@@ -9,7 +9,7 @@ import {
     ScrollView,
     Text,
     Pressable,
-    Image
+    Image, TouchableOpacity
 } from 'react-native';
 import VideoPlayer from '../components/VideoPlayer';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -107,8 +107,8 @@ class SituationDetailScreen extends Component {
     play = async (playbackObj, uri) => {
         try {
             return await playbackObj.loadAsync(
-                { uri },
-                { shouldPlay: true, progressUpdateIntervalMillis: 200 }
+                {uri},
+                {shouldPlay: true, progressUpdateIntervalMillis: 200}
             );
 
             return await playbackObj.playFromPositionAsync(0);
@@ -125,46 +125,54 @@ class SituationDetailScreen extends Component {
                 <ScrollView style={{flex: 1}}>
                     <VideoPlayer
                         playbackInstance={this.playbackInstance}
-                        height={width * 3 / 4}
+                        height={width * 9 / 16}
                         width={width}
                         videoUri={this.props.route.params.data[this.props.route.params.questionIndex].url}
                         // item={this.state.item}
                         outOfBoundItems={this.state.outOfBoundItems}
                         onUpdatePosition={this.onUpdatePosition}
                     />
-                    <Button
-                        style={styles.buttonSpace}
-                        title="Space"
-                        onPress={this.checkPoint}
-                    />
-                    <Text>Ấn space khi phát hiện tình huống nguy hiểm</Text>
-                    <View style={{
-                        flexDirection: "row",
-                        height: 50,
-                        width: "100%",
-                        backgroundColor: "black",
-                        marginTop: 20
-                    }}>
-                        <Pressable style={{backgroundColor: "red", flex: 1, height: "100%"}} onPress={this.pressPrev}>
-                            <View>
-                                <FontAwesome name="step-backward" size={18} color="#fff"/>
-                            </View>
-                        </Pressable>
-                        <View style={{backgroundColor: "green", flex: 1, height: "100%", justifyContent: "center"}}>
-                            <Text>{this.state.questionIndex + 1}/{data.length} </Text>
-                        </View>
-                        <Pressable style={{backgroundColor: "blue", flex: 1, height: "100%"}} onPress={this.pressNext}>
-                            <View>
-                                <FontAwesome name="step-forward" size={18} color="#fff"/>
-                            </View>
-                        </Pressable>
-
-                    </View>
+                    <TouchableOpacity style={styles.spaceButtonView} onPress={this.checkPoint}>
+                        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Space</Text>
+                    </TouchableOpacity>
+                    <Text style={{marginStart: 100, marginEnd: 100, marginTop: 10, textAlign: 'center'}}>Ấn space khi
+                        phát hiện tình huống nguy hiểm</Text>
                     {this.state.checked ?
-                        <View style={styles.answerView}>
-                            <Text>Điểm:{this.state.point + "/5"}</Text>
-                            <Text>{this.state.item.answer}</Text>
-                            <Image source={{uri: this.state.item.answerImg}} style={styles.answerImg}/>
+                        <View>
+                            <View style={{
+                                flexDirection: "row",
+                                height: 50,
+                                width: "100%",
+                                marginTop: 20
+                            }}>
+                                <TouchableOpacity style={{ flex: 1, height: "100%" , justifyContent : 'center' , marginStart : 20}}
+                                           onPress={this.pressPrev}>
+                                    <View>
+                                        <FontAwesome name="angle-double-left" size={40} />
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={{
+                                    flex: 2,
+                                    height: "100%",
+                                    justifyContent: "center",
+                                    alignItems : 'center'
+                                }}>
+                                    <Text>{this.state.questionIndex + 1}/{data.length} </Text>
+                                </View>
+                                <TouchableOpacity style={{ flex: 1, height: "100%" ,  marginStart : 20, flexDirection: 'row-reverse', alignItems : 'center'}}
+                                           onPress={this.pressNext}>
+                                    <View>
+                                        <FontAwesome name="angle-double-right" size={40} />
+                                    </View>
+                                </TouchableOpacity>
+
+                            </View>
+
+                            <View style={styles.answerView}>
+                                <Text>Điểm: {this.state.point + "/5"}</Text>
+                                <Text>{this.state.item.answer}</Text>
+                                <Image source={{uri: this.state.item.answerImg}} style={styles.answerImg}/>
+                            </View>
                         </View>
                         : <View/>
 
@@ -183,16 +191,22 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff'
     },
-    buttonSpace: {
-        margin: 500,
+    spaceButtonView: {
+        marginStart: 20,
+        marginEnd: 20,
+        height: 50,
+        backgroundColor: '#5466D8',
+        borderRadius: 9,
+        justifyContent: "center",
+        alignItems: "center"
     },
-    answerView : {
+    answerView: {
         margin: 20
     },
-    answerImg : {
-        width : "100%",
-        aspectRatio : 4/3,
-        resizeMode : "contain"
+    answerImg: {
+        width: "100%",
+        aspectRatio: 4 / 3,
+        resizeMode: "contain"
 
     }
 

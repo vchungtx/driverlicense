@@ -1,17 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"; 
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Slider from 'react-native-slider';
 
 
 const VideoControls = (props) => {
 
-    const { 
-        state, 
-        togglePlay, 
-        playbackInstanceInfo, 
-        setPlaybackInstanceInfo, 
+    const {
+        state,
+        togglePlay,
+        playbackInstanceInfo,
+        setPlaybackInstanceInfo,
         playbackInstance
     } = props;
 
@@ -38,7 +38,7 @@ const VideoControls = (props) => {
                     style={styles.slider}
                     thumbTintColor={"#fff"}
                     thumbStyle={{
-                        height:17, 
+                        height:17,
                         width:17,
                         borderRadius:100,
                     }}
@@ -81,9 +81,9 @@ const styles = StyleSheet.create({
       paddingHorizontal:20
     },
     innerContainer: {
-        flexDirection:'row', 
-        alignItems:'center', 
-        borderRadius:50, 
+        flexDirection:'row',
+        alignItems:'center',
+        borderRadius:50,
         paddingHorizontal:12,
         paddingRight:20,
         width:'100%',

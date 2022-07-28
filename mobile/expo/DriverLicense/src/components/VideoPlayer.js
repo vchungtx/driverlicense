@@ -108,7 +108,7 @@ export default function VideoPlayer(props) {
           togglePlay={togglePlay}
         />
       </View>
-         <Text>Thời gian: {(playbackInstanceInfo.position / 1000).toFixed(2)}/{(playbackInstanceInfo.duration / 1000).toFixed(2)}s  </Text>
+         <Text style={styles.timeView}>Thời gian: {(playbackInstanceInfo.position / 1000).toFixed(2)}/{(playbackInstanceInfo.duration / 1000).toFixed(2)}s  </Text>
        </View>
     </View>
   );
@@ -121,14 +121,17 @@ const styles = StyleSheet.create({
     height: height,
     zIndex : 1
   }),
-
+  timeView :{
+    fontWeight : 'bold',
+    marginLeft : 10
+  },
   container: {
     flex: 1,
     justifyContent: 'center'
   },
   controlsContainer: {
     position:'absolute',
-    bottom:30,
+    bottom:20,
     zIndex : 10
   }
 });
