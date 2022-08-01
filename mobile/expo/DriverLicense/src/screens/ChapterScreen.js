@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Dimensions, FlatList, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import constants from "../config/constants";
 
 class ChapterScreen extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class ChapterScreen extends Component {
 
     async getSituations() {
         try {
-            const response = await fetch('http://192.168.1.17:8080/sim/chapter/all');
+            const response = await fetch(constants.BASE_URL + 'sim/chapter/all');
             const json = await response.json();
             this.setState({
                 data: json,
@@ -54,17 +55,17 @@ class ChapterScreen extends Component {
                         renderItem={({item, index}) =>
                             <View>
                                 <TouchableOpacity style={{
-                                     padding: 10, borderRadius: 10,
-                                    backgroundColor : "#EDEDED" // invisible color
+                                    padding: 10, borderRadius: 10,
+                                    backgroundColor: "#EDEDED" // invisible color
                                 }}
                                                   onPress={this.getListViewItem.bind(this, item, index)}>
-                                    <View style={{flexDirection : 'row'}}>
-                                        <View style={{ flex: 9}}>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <View style={{flex: 9}}>
                                             <Text style={styles.title}> {item.name}</Text>
                                             <Text style={styles.desc}> {item.simQuestions.length}/120</Text>
                                         </View>
-                                        <View style={{ flex: 1, flexDirection : 'row-reverse', alignItems: 'center'}}>
-                                            <FontAwesome name="angle-right" size={30} />
+                                        <View style={{flex: 1, flexDirection: 'row-reverse', alignItems: 'center'}}>
+                                            <FontAwesome name="angle-right" size={30}/>
                                         </View>
                                     </View>
                                 </TouchableOpacity>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Dimensions, FlatList, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import constants from "../config/constants";
 
 class TestScreen extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class TestScreen extends Component {
 
     async getSituations() {
         try {
-            const response = await fetch('http://192.168.1.17:8080/sim/test/all');
+            const response = await fetch(constants.BASE_URL + 'sim/test/all');
             const json = await response.json();
             this.setState({
                 data: json.testList,

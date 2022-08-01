@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Dimensions, FlatList, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import constants from "../config/constants";
 
 class SituationScreen extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class SituationScreen extends Component {
 
     async getSituations() {
         try {
-            const response = await fetch('http://192.168.1.17:8080/sim/question/all');
+            const response = await fetch(constants.BASE_URL + '/sim/question/all');
             const json = await response.json();
             this.setState({
                 data: json,

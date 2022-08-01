@@ -5,7 +5,7 @@ const constants = {
   IS_ANDROID: Platform.OS === 'android',
   IS_IOS: Platform.OS === 'ios',
   IS_DEBUG_MODE_ENABLED: Boolean(window.navigator.userAgent),
-  BASE_URL: 'http://113.190.232.104:5900/pupilmonitoring/',
+  BASE_URL: 'http://192.168.1.217:8080/',
 };
 
 export default constants;
