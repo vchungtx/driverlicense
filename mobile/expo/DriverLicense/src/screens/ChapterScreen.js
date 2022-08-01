@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Dimensions, FlatList, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-class SituationScreen extends Component {
+class ChapterScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,7 +14,7 @@ class SituationScreen extends Component {
 
     async getSituations() {
         try {
-            const response = await fetch('http://192.168.1.17:8080/sim/question/all');
+            const response = await fetch('http://192.168.1.17:8080/sim/chapter/all');
             const json = await response.json();
             this.setState({
                 data: json,
@@ -33,10 +33,9 @@ class SituationScreen extends Component {
     //handling onPress action
     async getListViewItem(item, index) {
         this.props.navigation.navigate('SituationsDetail', {
-            data: this.state.data,
+            data: item.simQuestions,
             name: item.name,
-            questionIndex: index,
-            changeTitle : true
+            questionIndex: 0
         })
     }
 
@@ -62,7 +61,7 @@ class SituationScreen extends Component {
                                     <View style={{flexDirection : 'row'}}>
                                         <View style={{ flex: 9}}>
                                             <Text style={styles.title}> {item.name}</Text>
-                                            <Text style={styles.desc}> {item.detail}</Text>
+                                            <Text style={styles.desc}> {item.simQuestions.length}/120</Text>
                                         </View>
                                         <View style={{ flex: 1, flexDirection : 'row-reverse', alignItems: 'center'}}>
                                             <FontAwesome name="angle-right" size={30} />
@@ -87,15 +86,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     title: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: "bold"
     },
     desc: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: "bold"
     },
 
 
 });
 
-export default SituationScreen;
+export default ChapterScreen;

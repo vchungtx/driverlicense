@@ -32,6 +32,7 @@ public class SimChapter {
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToMany(mappedBy = "simChapter")
+    @OrderBy("numberOrder")
     private Set<SimQuestion> simQuestions = new LinkedHashSet<>();
 
     public Set<SimQuestion> getSimQuestions() {

@@ -13,31 +13,66 @@ import {
 } from 'react-native';
 import VideoPlayer from '../components/VideoPlayer';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const {height, width} = Dimensions.get('window');
+
+const LeftQuestionView = (props) => {
+    if (props.display) {
+        return <TouchableOpacity style={{ flex: 1, height: "100%" , justifyContent : 'center' , marginStart : 20}}
+            onPress={props.onPress}>
+            <View>
+                <FontAwesome name="angle-double-left" size={40}/>
+            </View>
+        </TouchableOpacity>
+    }else {
+        return <View style={{ flex: 1, height: "100%" , justifyContent : 'center' , marginStart : 20}}/>
+    }
+}
 
 class SituationDetailScreen extends Component {
 
     constructor(props) {
         super(props);
-        this.onUpdatePosition = this.onUpdatePosition.bind(this);
-        console.log('data:' + props.route.params.data);
+        // this.onUpdatePosition = this.onUpdatePosition.bind(this);
+        // this.onFinished = this.onFinished.bind(this);
+        this.data = props.route.params.data;
+        this.questionIndex = props.route.params.questionIndex;
+        this.testIndex = props.route.params.testIndex;
+        this.changeTitle = props.route.params.changeTitle;
+        this.title = props.route.params.name;
+        console.log('data:' + this.data.length);
+        console.log('data uri:' + this.data[this.questionIndex].url);
+
         this.state = {
             checked: false,
             outOfBoundItems: [],
-            questionIndex: props.route.params.questionIndex,
-            item: props.route.params.data[props.route.params.questionIndex],
+            questionIndex: this.questionIndex,
+            item: this.data[this.questionIndex],
 
         };
         this.playbackInstance = React.createRef();
     }
 
-    onUpdatePosition(positionMillis) {
+    onUpdatePosition = async (positionMillis) => {
         console.log('onUpdatePosition:' + positionMillis);
         this.setState({positionMillis: positionMillis})
     }
 
+    onFinished = async () => {
+        console.log('onFinished:');
+        if (this.testIndex != null) {
+            this.pressNext();
+        }
+    }
+
+    componentWillUnmount() {
+        console.log('componentWillUnmount:');
+    }
+
     checkPoint = async () => {
+
+        const index = this.state.questionIndex;
         console.log('checkPoint:');
         if (!this.state.checked) {
             this.setState({checked: true});
@@ -46,26 +81,65 @@ class SituationDetailScreen extends Component {
             const item = this.state.item;
             let startPoint = item.startPoint;
             let endPoint = item.endPoint;
-
+            let point = 0;
             if (checkPointPosition < startPoint || checkPointPosition > endPoint) {
-                this.setState({point: 0})
+                point = 0;
+
             } else {
                 let durationPoint = (endPoint - startPoint) / 5;
                 let durationCheck = checkPointPosition - startPoint;
                 let pointCheck = Math.trunc(durationCheck / durationPoint);
-                this.setState({point: (5 - pointCheck)})
+                point = 5 - pointCheck;
+            }
+            this.setState({point: point})
+            if (this.testIndex != null) {
+                await AsyncStorage.getItem('testResult').then(
+                    data => {
+                        // the string value read from AsyncStorage has been assigned to data
+                        console.log("data:" + data);
+                        // transform it back to an object
+                        data = JSON.parse(data);
+                        data[this.testIndex].point[index] = point;
+                        if (!data[this.testIndex].totalDone.includes(item.id)) {
+                            data[this.testIndex].totalDone.push(item.id);
+                        }
+                        if (point == 0) {
+                            if (!data[this.testIndex].wrong.includes(item.id)) {
+                                data[this.testIndex].wrong.push(item.id);
+                            }
+                            if (data[this.testIndex].correct.includes(item.id)) {
+                                data[this.testIndex].correct = data[this.testIndex].correct.filter(function (element) {
+                                    return element !== item.id
+                                })
+                            }
+                        } else {
+                            if (!data[this.testIndex].correct.includes(item.id)) {
+                                data[this.testIndex].correct.push(item.id);
+                            }
+                            if (data[this.testIndex].wrong.includes(item.id)) {
+                                data[this.testIndex].wrong = data[this.testIndex].wrong.filter(function (element) {
+                                    return element !== item.id
+                                })
+                            }
+                        }
+                        //save the value to AsyncStorage again
+                        AsyncStorage.setItem('testResult', JSON.stringify(data));
+
+                    }
+                );
             }
         }
 
     }
 
     pressNext = async () => {
-        const data = this.props.route.params.data;
-
         console.log('pressNext:' + this.state.questionIndex);
-        if (this.state.questionIndex < data.length - 1) {
-            const nextItem = data[this.state.questionIndex + 1];
-            this.props.navigation.setOptions({title: nextItem.name});
+        if (this.state.questionIndex < this.data.length - 1) {
+            const nextItem = this.data[this.state.questionIndex + 1];
+            if (this.changeTitle){
+                this.props.navigation.setOptions({title: nextItem.name});
+            }
+
             this.setState({
                 checked: false,
                 questionIndex: this.state.questionIndex + 1,
@@ -78,16 +152,23 @@ class SituationDetailScreen extends Component {
             } catch (error) {
                 console.log('error inside playNext helper method', error.message);
             }
+        }else{
+            if (this.testIndex != null){
+                this.props.navigation.replace('TestResult', {
+                    testIndex: this.testIndex,
+                    name: this.title,
+                });
+            }
         }
     }
 
     pressPrev = async () => {
-        const data = this.props.route.params.data;
-
         console.log('pressPrev:' + this.state.questionIndex);
         if (this.state.questionIndex > 0) {
-            const prevItem = data[this.state.questionIndex - 1];
-            this.props.navigation.setOptions({title: prevItem.name});
+            const prevItem = this.data[this.state.questionIndex - 1];
+            if (this.changeTitle){
+                this.props.navigation.setOptions({title: prevItem.name});
+            }
             this.setState({
                 checked: false,
                 questionIndex: (this.state.questionIndex - 1),
@@ -118,7 +199,6 @@ class SituationDetailScreen extends Component {
     };
 
     render() {
-        const data = this.props.route.params.data;
         return (
 
             <SafeAreaView style={styles.container}>
@@ -127,10 +207,11 @@ class SituationDetailScreen extends Component {
                         playbackInstance={this.playbackInstance}
                         height={width * 9 / 16}
                         width={width}
-                        videoUri={this.props.route.params.data[this.props.route.params.questionIndex].url}
+                        videoUri={this.data[this.questionIndex].url}
                         // item={this.state.item}
                         outOfBoundItems={this.state.outOfBoundItems}
                         onUpdatePosition={this.onUpdatePosition}
+                        onFinished={this.onFinished}
                     />
                     <TouchableOpacity style={styles.spaceButtonView} onPress={this.checkPoint}>
                         <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Space</Text>
@@ -145,24 +226,27 @@ class SituationDetailScreen extends Component {
                                 width: "100%",
                                 marginTop: 20
                             }}>
-                                <TouchableOpacity style={{ flex: 1, height: "100%" , justifyContent : 'center' , marginStart : 20}}
-                                           onPress={this.pressPrev}>
-                                    <View>
-                                        <FontAwesome name="angle-double-left" size={40} />
-                                    </View>
-                                </TouchableOpacity>
+                                <LeftQuestionView
+                                display={this.testIndex == null}
+                                onPress={this.pressPrev}/>
                                 <View style={{
                                     flex: 2,
                                     height: "100%",
                                     justifyContent: "center",
-                                    alignItems : 'center'
+                                    alignItems: 'center'
                                 }}>
-                                    <Text>{this.state.questionIndex + 1}/{data.length} </Text>
+                                    <Text>{this.state.questionIndex + 1}/{this.data.length} </Text>
                                 </View>
-                                <TouchableOpacity style={{ flex: 1, height: "100%" ,  marginStart : 20, flexDirection: 'row-reverse', alignItems : 'center'}}
-                                           onPress={this.pressNext}>
+                                <TouchableOpacity style={{
+                                    flex: 1,
+                                    height: "100%",
+                                    marginStart: 20,
+                                    flexDirection: 'row-reverse',
+                                    alignItems: 'center'
+                                }}
+                                                  onPress={this.pressNext}>
                                     <View>
-                                        <FontAwesome name="angle-double-right" size={40} />
+                                        <FontAwesome name="angle-double-right" size={40}/>
                                     </View>
                                 </TouchableOpacity>
 
@@ -195,7 +279,7 @@ const styles = StyleSheet.create({
         marginStart: 20,
         marginEnd: 20,
         height: 50,
-        backgroundColor: '#5466D8',
+        backgroundColor: '#815DFF',
         borderRadius: 9,
         justifyContent: "center",
         alignItems: "center"

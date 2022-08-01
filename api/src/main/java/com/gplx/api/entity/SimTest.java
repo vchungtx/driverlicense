@@ -14,8 +14,11 @@ public class SimTest {
     @Column(name = "name", length = 500)
     private String name;
 
-    @Column(name = "priority")
-    private Integer priority;
+    @Column(name = "questions", length = 100)
+    private String questions;
+
+    @Column(name = "number_order")
+    private Integer numberOrder;
 
     @Column(name = "status")
     private Integer status;
@@ -50,12 +53,12 @@ public class SimTest {
         this.status = status;
     }
 
-    public Integer getPriority() {
-        return priority;
+    public Integer getNumberOrder() {
+        return numberOrder;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setNumberOrder(Integer priority) {
+        this.numberOrder = priority;
     }
 
     public String getName() {
@@ -72,5 +75,13 @@ public class SimTest {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(String questions) {
+        this.questions = questions;
     }
 }

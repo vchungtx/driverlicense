@@ -10,26 +10,31 @@ class HomeScreen extends Component {
                 flexDirection: "column"
             }]}>
                 <View style={{flex: 1, flexDirection: "row"}}>
-                    <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}>
+                    <TouchableOpacity
+                        style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}
+                        onPress={() => this.props.navigation.navigate('Test')}>
                         <Image source={require('../../assets/tick.png')}/>
-                        <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'center'}}>Đề thi</Text>
+                        <Text style={styles.menuText}>Đề thi</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}>
+                    <TouchableOpacity
+                        style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}
+                        onPress={() => this.props.navigation.navigate('Chapter')}>
                         <Image source={require('../../assets/edit.png')}/>
-                        <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'center'}}>Ôn tập theo chương</Text>
+                        <Text style={styles.menuText}>Ôn tập theo chương</Text>
                     </TouchableOpacity>
 
                 </View>
                 <View style={{flex: 1, flexDirection: "row"}}>
-                    <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}>
+                    <TouchableOpacity
+                        style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}>
                         <Image source={require('../../assets/fog.png')}/>
-                        <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'center'}}>Luyện tập câu sai</Text>
+                        <Text style={styles.menuText}>Luyện tập câu sai</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}
                         onPress={() => this.props.navigation.navigate('Situations')}>
                         <Image source={require('../../assets/repair.png')}/>
-                        <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'center'}}>120 tình huống</Text>
+                        <Text style={styles.menuText}>120 tình huống</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -44,6 +49,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff'
     },
+    menuText: {
+        fontWeight: 'bold', fontSize: 20, textAlign: 'center', fontFamily: "sans-serif"
+    }
 
 });
 
