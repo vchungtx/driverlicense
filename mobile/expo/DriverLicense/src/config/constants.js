@@ -5,7 +5,7 @@ const constants = {
   IS_ANDROID: Platform.OS === 'android',
   IS_IOS: Platform.OS === 'ios',
   IS_DEBUG_MODE_ENABLED: Boolean(window.navigator.userAgent),
-  BASE_URL: 'http://192.168.1.217:8080/',
+  BASE_URL: 'https://api.luyenthigiaypheplaixe.com/',
 };
 
 export default constants;

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DriverLicense",
-    "slug": "DriverLicense",
+    "name": "Mô phỏng GPLX ô tô",
+    "slug": "luyen-thi-mo-phone-gplx-o-to",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,6 +21,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.luyenthigiaypheplaixe.mophong",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

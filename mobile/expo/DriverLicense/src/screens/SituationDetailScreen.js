@@ -52,6 +52,26 @@ class SituationDetailScreen extends Component {
 
         };
         this.playbackInstance = React.createRef();
+
+    }
+
+    async componentDidMount() {
+        if (this.props.route.params.testIndex != null){
+            this.props.navigation.setOptions({
+                headerRight: () => (
+                    <TouchableOpacity onPress={async ()=>{
+                        if (!this.state.checked){
+                            await this.checkPoint(0);
+                        }
+                        this.props.navigation.replace('TestResult', {
+                            testIndex: this.testIndex,
+                            name: this.title,
+                            onGoBack: () => this.props.route.params.onGoBack(),
+                        });
+                    }}
+                    ><Text style={styles.finishBtn}>Kết thúc</Text></TouchableOpacity>
+                )})
+        }
     }
 
     onUpdatePosition = async (positionMillis) => {
@@ -70,70 +90,103 @@ class SituationDetailScreen extends Component {
         console.log('componentWillUnmount:');
     }
 
-    checkPoint = async () => {
+    checkCurrentPoint = async () => {
 
-        const index = this.state.questionIndex;
-        console.log('checkPoint:');
         if (!this.state.checked) {
             this.setState({checked: true});
             const checkPointPosition = this.state.positionMillis / 1000;
-            console.log('checkPointPosition:' + checkPointPosition);
-            const item = this.state.item;
-            let startPoint = item.startPoint;
-            let endPoint = item.endPoint;
-            let point = 0;
-            if (checkPointPosition < startPoint || checkPointPosition > endPoint) {
-                point = 0;
-
-            } else {
-                let durationPoint = (endPoint - startPoint) / 5;
-                let durationCheck = checkPointPosition - startPoint;
-                let pointCheck = Math.trunc(durationCheck / durationPoint);
-                point = 5 - pointCheck;
-            }
-            this.setState({point: point})
-            if (this.testIndex != null) {
-                await AsyncStorage.getItem('testResult').then(
-                    data => {
-                        // the string value read from AsyncStorage has been assigned to data
-                        console.log("data:" + data);
-                        // transform it back to an object
-                        data = JSON.parse(data);
-                        data[this.testIndex].point[index] = point;
-                        if (!data[this.testIndex].totalDone.includes(item.id)) {
-                            data[this.testIndex].totalDone.push(item.id);
-                        }
-                        if (point == 0) {
-                            if (!data[this.testIndex].wrong.includes(item.id)) {
-                                data[this.testIndex].wrong.push(item.id);
-                            }
-                            if (data[this.testIndex].correct.includes(item.id)) {
-                                data[this.testIndex].correct = data[this.testIndex].correct.filter(function (element) {
-                                    return element !== item.id
-                                })
-                            }
-                        } else {
-                            if (!data[this.testIndex].correct.includes(item.id)) {
-                                data[this.testIndex].correct.push(item.id);
-                            }
-                            if (data[this.testIndex].wrong.includes(item.id)) {
-                                data[this.testIndex].wrong = data[this.testIndex].wrong.filter(function (element) {
-                                    return element !== item.id
-                                })
-                            }
-                        }
-                        //save the value to AsyncStorage again
-                        AsyncStorage.setItem('testResult', JSON.stringify(data));
-
-                    }
-                );
-            }
+            this.setState({checkPoint : checkPointPosition});
+            await this.checkPoint(checkPointPosition);
         }
 
     }
 
+    checkPoint = async (checkPointPosition) => {
+        const index = this.state.questionIndex;
+        console.log('checkPointPosition:' + checkPointPosition);
+        const item = this.state.item;
+        let startPoint = item.startPoint;
+        let endPoint = item.endPoint;
+        let point = 0;
+        if (checkPointPosition < startPoint || checkPointPosition > endPoint) {
+            point = 0;
+
+        } else {
+            let durationPoint = (endPoint - startPoint) / 5;
+            let durationCheck = checkPointPosition - startPoint;
+            let pointCheck = Math.trunc(durationCheck / durationPoint);
+            point = 5 - pointCheck;
+        }
+        this.setState({point: point})
+        if (this.testIndex != null) {
+            await AsyncStorage.getItem('testResult').then(
+                data => {
+                    // the string value read from AsyncStorage has been assigned to data
+                    console.log("data:" + data);
+                    // transform it back to an object
+                    data = JSON.parse(data);
+                    data[this.testIndex].point[index] = point;
+                    if (!data[this.testIndex].totalDone.includes(item.id)) {
+                        data[this.testIndex].totalDone.push(item.id);
+                    }
+                    if (point == 0) {
+                        if (!data[this.testIndex].wrong.includes(item.id)) {
+                            data[this.testIndex].wrong.push(item.id);
+                        }
+                        if (data[this.testIndex].correct.includes(item.id)) {
+                            data[this.testIndex].correct = data[this.testIndex].correct.filter(function (element) {
+                                return element !== item.id
+                            })
+                        }
+                    } else {
+                        if (!data[this.testIndex].correct.includes(item.id)) {
+                            data[this.testIndex].correct.push(item.id);
+                        }
+                        if (data[this.testIndex].wrong.includes(item.id)) {
+                            data[this.testIndex].wrong = data[this.testIndex].wrong.filter(function (element) {
+                                return element !== item.id
+                            })
+                        }
+                    }
+                    //save the value to AsyncStorage again
+                    AsyncStorage.setItem('testResult', JSON.stringify(data));
+
+                }
+            );
+        }
+
+        await AsyncStorage.getItem('questionFalse').then(
+            data => {
+                // the string value read from AsyncStorage has been assigned to data
+                console.log("data:" + data);
+                if (data == null){
+                    data = [];
+                }else{
+                    // transform it back to an object
+                    data = JSON.parse(data);
+                }
+                if (point == 0) {
+                    if (!data.includes(item.id)) {
+                        data.push(item.id);
+                    }
+                } else {
+                    if (data.includes(item.id)) {
+                        data = data.filter(function (element) {
+                            return element !== item.id
+                        })
+                    }
+                }
+                //save the value to AsyncStorage again
+                AsyncStorage.setItem('questionFalse', JSON.stringify(data));
+
+            }
+        );
+    }
     pressNext = async () => {
         console.log('pressNext:' + this.state.questionIndex);
+        if (!this.state.checked){
+            await this.checkPoint(0);
+        }
         if (this.state.questionIndex < this.data.length - 1) {
             const nextItem = this.data[this.state.questionIndex + 1];
             if (this.changeTitle){
@@ -157,6 +210,7 @@ class SituationDetailScreen extends Component {
                 this.props.navigation.replace('TestResult', {
                     testIndex: this.testIndex,
                     name: this.title,
+                    onGoBack: () => this.props.route.params.onGoBack(),
                 });
             }
         }
@@ -213,7 +267,7 @@ class SituationDetailScreen extends Component {
                         onUpdatePosition={this.onUpdatePosition}
                         onFinished={this.onFinished}
                     />
-                    <TouchableOpacity style={styles.spaceButtonView} onPress={this.checkPoint}>
+                    <TouchableOpacity style={styles.spaceButtonView} onPress={this.checkCurrentPoint}>
                         <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Space</Text>
                     </TouchableOpacity>
                     <Text style={{marginStart: 100, marginEnd: 100, marginTop: 10, textAlign: 'center'}}>Ấn space khi
@@ -254,6 +308,9 @@ class SituationDetailScreen extends Component {
 
                             <View style={styles.answerView}>
                                 <Text>Điểm: {this.state.point + "/5"}</Text>
+                                <Text>Thời điểm bắt đầu: {this.state.item.startPoint}</Text>
+                                <Text>Thời điểm kết thúc: {this.state.item.endPoint}</Text>
+                                <Text>Thời điểm bấm: {this.state.checkPoint}</Text>
                                 <Text>{this.state.item.answer}</Text>
                                 <Image source={{uri: this.state.item.answerImg}} style={styles.answerImg}/>
                             </View>
@@ -292,6 +349,9 @@ const styles = StyleSheet.create({
         aspectRatio: 4 / 3,
         resizeMode: "contain"
 
+    },
+    finishBtn:{
+        fontSize: 18,
     }
 
 });

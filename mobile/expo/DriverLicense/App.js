@@ -9,6 +9,7 @@ import SituationDetailScreen from './src/screens/SituationDetailScreen';
 import ChapterScreen from "./src/screens/ChapterScreen";
 import TestScreen from "./src/screens/TestScreen";
 import TestResultScreen from "./src/screens/TestResultScreen";
+import WrongSituationScreen from "./src/screens/WrongSituationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,9 @@ export default function App() {
                 <Stack.Screen
                     name="Test" component={TestScreen}
                     options={{ title: 'Đề thi' }}/>
+                <Stack.Screen
+                    name="WrongSituations" component={WrongSituationScreen}
+                    options={{ title: 'Luyện tập câu sai' }}/>
                 <Stack.Screen
                     name="SituationsDetail" component={SituationDetailScreen} options={({ route }) => ({ title: route.params.name })}
                 />

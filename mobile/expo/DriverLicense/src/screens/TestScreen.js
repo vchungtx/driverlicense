@@ -1,10 +1,21 @@
 import React, {Component} from 'react';
-import {View, Dimensions, FlatList, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+    View,
+    Dimensions,
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ActivityIndicator,
+    Button
+} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import constants from "../config/constants";
 
 class TestScreen extends Component {
+
     constructor(props) {
 
         super(props);
@@ -16,7 +27,7 @@ class TestScreen extends Component {
     }
 
 
-    async getSituations() {
+    async getTests() {
         try {
             const response = await fetch(constants.BASE_URL + 'sim/test/all');
             const json = await response.json();
@@ -84,13 +95,14 @@ class TestScreen extends Component {
             data: questionToTest,
             name: item.name,
             questionIndex: 0,
-            testIndex: index
+            testIndex: index,
+            onGoBack: () => this.getTests(),
         })
     }
 
     componentDidMount() {
         console.log('componentDidMount');
-        this.getSituations();
+        this.getTests();
     }
 
 

@@ -26,7 +26,8 @@ class HomeScreen extends Component {
                 </View>
                 <View style={{flex: 1, flexDirection: "row"}}>
                     <TouchableOpacity
-                        style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}>
+                        style={{flex: 1, justifyContent: "center", alignItems: 'center', margin: 24, aspectRatio: 1}}
+                        onPress={() => this.props.navigation.navigate('WrongSituations')}>
                         <Image source={require('../../assets/fog.png')}/>
                         <Text style={styles.menuText}>Luyện tập câu sai</Text>
                     </TouchableOpacity>

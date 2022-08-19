@@ -89,11 +89,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontFamily: "sans-serif"
     },
     desc: {
         fontSize: 16,
-        fontWeight: "bold"
+        fontFamily: "sans-serif"
     },
 
 
