@@ -22,13 +22,26 @@
     },
     "android": {
       "package": "com.luyenthigiaypheplaixe.mophong",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [],
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "400fc85a-be23-400a-98da-8b51249b0fe6"
+      }
     }
   }
 }

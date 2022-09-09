@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 2, 2022 11:35:48 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.gplx.entity.Link" table="link" catalog="driverlicense" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="url" type="string">
+            <column name="url" length="500" />
+        </property>
+        <property name="video" type="string">
+            <column name="video" length="500" />
+        </property>
+        <property name="startTime" type="java.lang.Double">
+            <column name="start_time" precision="12" scale="0" />
+        </property>
+        <property name="endTime" type="java.lang.Double">
+            <column name="end_time" precision="12" scale="0" />
+        </property>
+        <property name="answer" type="string">
+            <column name="answer" length="500" />
+        </property>
+    </class>
+</hibernate-mapping>
